@@ -1,69 +1,500 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EBB Canvas HTML Package Index</title>
-<style>
-  body { font-family: Arial, Helvetica, sans-serif; line-height: 1.55; color: #1f2933; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-  h1 { font-size: 2rem; line-height: 1.2; margin-top: 2rem; border-bottom: 2px solid #d9e2ec; padding-bottom: .35rem; }
-  h2 { font-size: 1.45rem; line-height: 1.25; margin-top: 1.6rem; }
-  h3 { font-size: 1.18rem; margin-top: 1.25rem; }
-  p { margin: .7rem 0; }
-  blockquote { border-left: 4px solid #bcccdc; margin: 1rem 0; padding: .5rem 1rem; background: #f8fafc; font-weight: 600; }
-  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .95rem; }
-  th, td { border: 1px solid #cbd2d9; padding: .45rem .55rem; vertical-align: top; }
-  th { background: #f0f4f8; text-align: left; }
-  .canvas-note { font-size: .9rem; color: #52606d; border-top: 1px solid #d9e2ec; margin-top: 2rem; padding-top: .75rem; }
-  nav.toc ul { columns: 2; }
-  @media print { body { max-width: none; margin: 0.5in; } nav.toc { display: none; } }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chapter 6 Workbook v1.0 — Practice Test Workbook</title>
+  <style>
+    :root {
+      --bg: #f7f5ef;
+      --panel: #ffffff;
+      --ink: #24211c;
+      --muted: #625c52;
+      --line: #ded7ca;
+      --accent: #6d5640;
+      --accent-dark: #493526;
+      --accent-soft: #f3ebe1;
+      --warn: #7a4f00;
+      --warn-bg: #fff5df;
+      --good-bg: #eef7ec;
+      --shadow: 0 12px 28px rgba(45, 39, 30, 0.10);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f7f5ef 0%, #eee4d8 100%);
+      line-height: 1.55;
+    }
+    header {
+      background: radial-gradient(circle at top left, #faf4ec, #eee2d5 55%, #dbc8b2 100%);
+      border-bottom-color: #cdb9a4;
+      border-bottom-style: solid;
+      border-bottom-width: 1px;
+      padding: 28px 18px;
+    }
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    .hero { display: grid; grid-template-columns: 1.6fr 0.9fr; gap: 20px; align-items: stretch; }
+    .hero-card, .side-card, section {
+      background: rgba(255,255,255,0.94);
+      border-color: var(--line);
+      border-style: solid;
+      border-width: 1px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero-card { padding: 26px; }
+    .side-card { padding: 20px; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; font-weight: 800; color: var(--accent-dark); }
+    h1 { margin: 8px 0 10px; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.05; }
+    h2 { margin-top: 0; color: var(--accent-dark); font-size: 1.55rem; }
+    h3 { color: var(--accent-dark); margin-bottom: 8px; }
+    p { margin-top: 0; }
+    .tagline { font-size: 1.15rem; color: #373228; max-width: 820px; }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      border-color: #c8b39c; border-style: solid; border-width: 1px;
+      border-radius: 999px; padding: 6px 10px; background: #fff8ef;
+      font-size: .88rem; color: var(--accent-dark); font-weight: 650;
+    }
+    .grid { display: grid; grid-template-columns: 260px 1fr; gap: 18px; margin-top: 18px; }
+    nav { position: sticky; top: 12px; align-self: start; }
+    .progress-box {
+      background: var(--panel); border-color: var(--line); border-style: solid; border-width: 1px;
+      border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px;
+    }
+    .bar { height: 12px; background: #e5dfd2; border-radius: 999px; overflow: hidden; margin: 8px 0 8px; }
+    .bar > div { height: 100%; width: 0%; background: var(--accent); transition-property: width; transition-duration: 200ms; transition-timing-function: ease; }
+    .toc { list-style: none; padding: 0; margin: 10px 0 0; }
+    .toc li { margin: 6px 0; }
+    .toc a { color: var(--accent-dark); text-decoration: none; font-weight: 700; font-size: .93rem; }
+    .toc a:hover, .toc a:focus { text-decoration: underline; }
+    main { display: grid; gap: 18px; }
+    section { padding: 22px; }
+    .section-kicker { color: var(--muted); font-weight: 750; margin-bottom: 6px; }
+    .callout {
+      background: var(--accent-soft); border-left-color: var(--accent); border-left-style: solid; border-left-width: 5px;
+      padding: 14px 16px; border-radius: 12px; margin: 14px 0;
+    }
+    .warning {
+      background: var(--warn-bg); border-left-color: var(--warn); border-left-style: solid; border-left-width: 5px;
+      padding: 14px 16px; border-radius: 12px; margin: 14px 0;
+    }
+    .success {
+      background: var(--good-bg); border-left-color: #4d7e46; border-left-style: solid; border-left-width: 5px;
+      padding: 14px 16px; border-radius: 12px; margin: 14px 0;
+    }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label { display: block; font-weight: 800; margin: 14px 0 6px; color: #2f2a24; }
+    .hint { color: var(--muted); font-size: .92rem; margin-top: -3px; }
+    input[type="text"], select, textarea {
+      width: 100%; font: inherit; color: var(--ink); background: #fffdf8;
+      border-color: #bfb7a8; border-style: solid; border-width: 1px;
+      border-radius: 12px; padding: 10px 12px;
+    }
+    textarea { min-height: 94px; resize: vertical; }
+    input[type="text"]:focus, select:focus, textarea:focus, button:focus {
+      outline-color: var(--accent); outline-style: solid; outline-width: 3px; outline-offset: 2px;
+    }
+    .required-mark { color: #7a2600; }
+    .checkline { display: flex; gap: 10px; align-items: flex-start; margin: 12px 0; }
+    .checkline input { margin-top: 5px; }
+    .buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    button, .buttonlike {
+      appearance: none; border-color: var(--accent-dark); border-style: solid; border-width: 1px;
+      background: var(--accent); color: #fff; padding: 10px 14px; border-radius: 999px;
+      font-weight: 800; cursor: pointer; text-decoration: none; display: inline-block;
+    }
+    button.secondary { background: #fffdf8; color: var(--accent-dark); }
+    button.danger { background: #7a3b2e; border-color: #5d2a20; }
+    button:hover { filter: brightness(0.97); }
+    .small { font-size: .9rem; color: var(--muted); }
+    .casebox {
+      border-color: #d5cdbc; border-style: solid; border-width: 1px; border-radius: 14px;
+      background: #fffaf0; padding: 16px; margin: 12px 0;
+    }
+    .output {
+      white-space: pre-wrap; background: #1f1d1a; color: #fffaf0; padding: 16px; border-radius: 14px;
+      min-height: 260px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem;
+    }
+    footer { padding: 24px 18px 40px; color: var(--muted); text-align: center; }
+    @media (max-width: 860px) {
+      .hero, .grid, .two { grid-template-columns: 1fr; }
+      nav { position: static; }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <div class="wrap hero">
+      <div class="hero-card">
+        <div class="eyebrow">Chapter 6 Workbook v1.0 · Classroom Version</div>
+        <h1>Practice Test Workbook</h1>
+        <p class="tagline">Practice the Chapter 6 skill: noticing how repeated actions form habits, character, tested commitments, and repair routes.</p>
+        <div class="pill-row" aria-label="Workbook concepts">
+          <span class="pill">Virtue ethics</span>
+          <span class="pill">Habit route</span>
+          <span class="pill">Practical wisdom</span>
+          <span class="pill">Tested commitment</span>
+          <span class="pill">Practice repair</span>
+        </div>
+      </div>
+      <aside class="side-card">
+        <h2>Chapter move</h2>
+        <p><strong>Practice the character.</strong></p>
+        <p class="small">Estimated time: 25–35 minutes. Your work is saved only in this browser unless you export it.</p>
+      </aside>
+    </div>
+  </header>
 
+  <div class="wrap grid">
+    <nav aria-label="Workbook progress">
+      <div class="progress-box">
+        <strong>Progress</strong>
+        <div class="bar" aria-hidden="true"><div id="progressFill"></div></div>
+        <div id="progressText" class="small">0% complete</div>
+        <ol class="toc">
+          <li><a href="#arrive">1. Arrive</a></li>
+          <li><a href="#case">2. Read the Case</a></li>
+          <li><a href="#repeated">3. Repeated Action</a></li>
+          <li><a href="#route">4. Habit Route</a></li>
+          <li><a href="#trains">5. What the Habit Trains</a></li>
+          <li><a href="#wisdom">6. Practical Wisdom and Supports</a></li>
+          <li><a href="#limits">7. Responsibility and Limits</a></li>
+          <li><a href="#repair">8. Repair Practice</a></li>
+          <li><a href="#output">9. Output Card</a></li>
+        </ol>
+      </div>
+    </nav>
 
-<h1>Ethics and Critical Thinking — Canvas HTML Package</h1>
-<p>This package contains Canvas-friendly standalone HTML files and matching body-only fragments for the finalized textbook.</p>
-<h2>Complete book</h2>
-<ul><li><a href="full_book/EBB_complete_textbook_canvas_preview.html">Complete textbook preview HTML</a></li></ul>
-<h2>Individual pages</h2>
-<table><thead><tr><th>Order</th><th>Section</th><th>Approx. words</th></tr></thead><tbody><tr><td>00</td><td><a href="canvas_pages/00_title-page.html">Title Page</a></td><td>46</td></tr>
-<tr><td>01</td><td><a href="canvas_pages/01_table-of-contents.html">Table of Contents</a></td><td>192</td></tr>
-<tr><td>02</td><td><a href="canvas_pages/02_front-matter.html">Front Matter</a></td><td>118</td></tr>
-<tr><td>03</td><td><a href="canvas_pages/03_preface.html">Preface</a></td><td>997</td></tr>
-<tr><td>04</td><td><a href="canvas_pages/04_how-to-use-this-book.html">How to Use This Book</a></td><td>552</td></tr>
-<tr><td>05</td><td><a href="canvas_pages/05_the-ethics-beyond-boundaries-course-rhythm.html">The Ethics Beyond Boundaries Course Rhythm</a></td><td>238</td></tr>
-<tr><td>06</td><td><a href="canvas_pages/06_a-guide-to-prf-22-the-explainer-and-the-navigator.html">A Guide to PRF-22, the Explainer, and the Navigator</a></td><td>399</td></tr>
-<tr><td>07</td><td><a href="canvas_pages/07_privacy-choice-and-responsible-reflection.html">Privacy, Choice, and Responsible Reflection</a></td><td>267</td></tr>
-<tr><td>08</td><td><a href="canvas_pages/08_course-map-the-twelve-chapter-journey.html">Course Map: The Twelve Chapter Journey</a></td><td>336</td></tr>
-<tr><td>09</td><td><a href="canvas_pages/09_unit-1-seeing-responsibly.html">Unit 1 — Seeing Responsibly</a></td><td>654</td></tr>
-<tr><td>10</td><td><a href="canvas_pages/10_chapter-1.html">Chapter 1</a></td><td>3764</td></tr>
-<tr><td>11</td><td><a href="canvas_pages/11_chapter-2.html">Chapter 2</a></td><td>3498</td></tr>
-<tr><td>12</td><td><a href="canvas_pages/12_chapter-3.html">Chapter 3</a></td><td>3637</td></tr>
-<tr><td>13</td><td><a href="canvas_pages/13_unit-2-preserving-agency.html">Unit 2 — Preserving Agency</a></td><td>732</td></tr>
-<tr><td>14</td><td><a href="canvas_pages/14_chapter-4.html">Chapter 4</a></td><td>3474</td></tr>
-<tr><td>15</td><td><a href="canvas_pages/15_chapter-5.html">Chapter 5</a></td><td>3818</td></tr>
-<tr><td>16</td><td><a href="canvas_pages/16_chapter-6.html">Chapter 6</a></td><td>3456</td></tr>
-<tr><td>17</td><td><a href="canvas_pages/17_unit-3-acting-through-systems.html">Unit 3 — Acting Through Systems</a></td><td>612</td></tr>
-<tr><td>18</td><td><a href="canvas_pages/18_chapter-7.html">Chapter 7</a></td><td>3460</td></tr>
-<tr><td>19</td><td><a href="canvas_pages/19_chapter-8.html">Chapter 8</a></td><td>3577</td></tr>
-<tr><td>20</td><td><a href="canvas_pages/20_chapter-9.html">Chapter 9</a></td><td>3591</td></tr>
-<tr><td>21</td><td><a href="canvas_pages/21_unit-4-repairing-shared-worlds.html">Unit 4 — Repairing Shared Worlds</a></td><td>689</td></tr>
-<tr><td>22</td><td><a href="canvas_pages/22_chapter-10.html">Chapter 10</a></td><td>3305</td></tr>
-<tr><td>23</td><td><a href="canvas_pages/23_chapter-11.html">Chapter 11</a></td><td>3242</td></tr>
-<tr><td>24</td><td><a href="canvas_pages/24_chapter-12.html">Chapter 12</a></td><td>3633</td></tr>
-<tr><td>25</td><td><a href="canvas_pages/25_unit-4-closing-repairing-shared-worlds.html">Unit 4 Closing: Repairing Shared Worlds</a></td><td>207</td></tr>
-<tr><td>26</td><td><a href="canvas_pages/26_back-matter.html">Back Matter</a></td><td>2</td></tr>
-<tr><td>27</td><td><a href="canvas_pages/27_epilogue.html">Epilogue</a></td><td>701</td></tr>
-<tr><td>28</td><td><a href="canvas_pages/28_glossary.html">Glossary</a></td><td>1253</td></tr>
-<tr><td>29</td><td><a href="canvas_pages/29_tool-index.html">Tool Index</a></td><td>1250</td></tr>
-<tr><td>30</td><td><a href="canvas_pages/30_ethics-beyond-boundaries-integration-guide.html">Ethics Beyond Boundaries Integration Guide</a></td><td>635</td></tr>
-<tr><td>32</td><td><a href="canvas_pages/32_optional-instructor-implementation-notes.html">Optional Instructor Implementation Notes</a></td><td>233</td></tr>
-<tr><td>33</td><td><a href="canvas_pages/33_optional-historical-extension-case-map.html">Optional Historical Extension Case Map</a></td><td>372</td></tr>
-<tr><td>34</td><td><a href="canvas_pages/34_chapter-carry-forward-questions.html">Chapter Carry-Forward Questions</a></td><td>148</td></tr>
-<tr><td>35</td><td><a href="canvas_pages/35_personal-ethics-journal-reflection-question-archive.html">Personal Ethics Journal Reflection Question Archive</a></td><td>518</td></tr>
-<tr><td>36</td><td><a href="canvas_pages/36_final-student-portfolio-option.html">Final Student Portfolio Option</a></td><td>171</td></tr></tbody></table>
+    <main>
+      <section id="arrive">
+        <div class="section-kicker">1 · Arrive</div>
+        <h2>Character is practiced over time</h2>
+        <p>In Chapter 6, you learned that ethics is not only about one isolated choice. Repeated action trains what we notice, desire, avoid, and become. This workbook helps you use the <strong>Practice Test</strong> to examine a habit route and propose a small repair practice.</p>
+        <div class="warning"><strong>Privacy reminder:</strong> You may use the provided case, a fictional example, a public example, a historical example, a composite example, or a low-stakes personal example. Do not disclose private, identifying, or sensitive information.</div>
+        <label class="checkline" for="privacy_ack"><input id="privacy_ack" data-required="true" type="checkbox"> <span>I understand that I should not disclose private, identifying, or sensitive information in this workbook. <span class="required-mark">*</span></span></label>
+      </section>
 
-<div class="canvas-note">Canvas note: This file uses semantic HTML only. You may paste the body content into a Canvas Page using the HTML editor.</div>
+      <section id="case">
+        <div class="section-kicker">2 · Read the Case</div>
+        <h2>The Avoided Conversation</h2>
+        <div class="casebox">
+          <p><strong>Case:</strong> Sam has a habit. Whenever a serious conversation begins, Sam checks their phone, makes a joke, changes the subject, or suddenly remembers something else they need to do.</p>
+          <p>Sam says, “I just do not like drama.” But over time, friends stop bringing serious concerns to Sam. They expect Sam to avoid discomfort. One friend says, “I like Sam, but I cannot trust them with hard things.”</p>
+          <p>Sam did not make one dramatic harmful choice. But Sam has practiced a route: discomfort appears, avoidance follows.</p>
+        </div>
+        <label for="case_first_notice">What stands out first in this case? <span class="required-mark">*</span></label>
+        <textarea id="case_first_notice" data-required="true"></textarea>
+        <label for="case_quick_judgment">What might a quick judgment miss if it only asks whether Sam is a good or bad person? <span class="required-mark">*</span></label>
+        <textarea id="case_quick_judgment" data-required="true"></textarea>
+      </section>
+
+      <section id="repeated">
+        <div class="section-kicker">3 · Repeated Action</div>
+        <h2>What keeps happening?</h2>
+        <div class="callout"><strong>Practice Test Step 1:</strong> Identify the repeated action. A single action matters, but a habit forms through repetition.</div>
+        <label for="repeated_action">What repeated action or response keeps happening? <span class="required-mark">*</span></label>
+        <textarea id="repeated_action" data-required="true"></textarea>
+        <label for="trigger">What situation, feeling, pressure, or cue seems to trigger the repeated response? <span class="required-mark">*</span></label>
+        <textarea id="trigger" data-required="true"></textarea>
+      </section>
+
+      <section id="route">
+        <div class="section-kicker">4 · Habit Route</div>
+        <h2>Trace the route from attention to action</h2>
+        <div class="callout"><strong>Habit route:</strong> a repeated route from attention to action that becomes easier over time.</div>
+        <label for="habit_route">Write the habit route as a simple sequence. Example: discomfort appears → phone/joke/escape follows. <span class="required-mark">*</span></label>
+        <textarea id="habit_route" data-required="true"></textarea>
+        <label for="isolated_or_habit">Is this best understood as one isolated choice, a forming habit, a settled habit, or are you unsure? <span class="required-mark">*</span></label>
+        <select id="isolated_or_habit" data-required="true">
+          <option value="">Choose one</option>
+          <option>One isolated choice</option>
+          <option>A forming habit</option>
+          <option>A settled habit</option>
+          <option>Unsure</option>
+        </select>
+        <label for="why_habit">Explain why you chose that answer. <span class="required-mark">*</span></label>
+        <textarea id="why_habit" data-required="true"></textarea>
+      </section>
+
+      <section id="trains">
+        <div class="section-kicker">5 · What the Habit Trains</div>
+        <h2>What is becoming easier?</h2>
+        <p>Habits train more than behavior. They can train attention, desire, avoidance, expectation, trust, and future agency.</p>
+        <label for="trains_attention">What does this habit train the person to notice, ignore, or expect? <span class="required-mark">*</span></label>
+        <textarea id="trains_attention" data-required="true"></textarea>
+        <label for="trains_avoidance">What does this habit train the person to desire, avoid, or escape? <span class="required-mark">*</span></label>
+        <textarea id="trains_avoidance" data-required="true"></textarea>
+        <label for="affects_others">How does the habit affect other people or the relationship? <span class="required-mark">*</span></label>
+        <textarea id="affects_others" data-required="true"></textarea>
+      </section>
+
+      <section id="wisdom">
+        <div class="section-kicker">6 · Practical Wisdom and Supports</div>
+        <h2>What does the situation call for?</h2>
+        <div class="callout"><strong>Practical wisdom:</strong> the ability to judge what is called for in a concrete situation. It is not mechanical rule-following.</div>
+        <label for="ethical_concern">What ethical concern is at stake? <span class="required-mark">*</span></label>
+        <textarea id="ethical_concern" data-required="true"></textarea>
+        <label for="wisdom_requires">What might practical wisdom require instead of the habitual response? <span class="required-mark">*</span></label>
+        <textarea id="wisdom_requires" data-required="true"></textarea>
+        <label for="support_needed">What condition, support, script, pause, or practice might make the better response more possible? <span class="required-mark">*</span></label>
+        <textarea id="support_needed" data-required="true"></textarea>
+      </section>
+
+      <section id="limits">
+        <div class="section-kicker">7 · Responsibility and Limits</div>
+        <h2>Avoid shame, but do not erase responsibility</h2>
+        <p>Chapter 6 should not be used to label people as permanently good or bad. Many habits form under pressure. But a habit can still be examined and repaired.</p>
+        <label for="responsibility_belongs">Where does responsibility still belong in this case? <span class="required-mark">*</span></label>
+        <textarea id="responsibility_belongs" data-required="true"></textarea>
+        <label for="conditions_matter">What conditions or pressures may have shaped the habit without making repair impossible? <span class="required-mark">*</span></label>
+        <textarea id="conditions_matter" data-required="true"></textarea>
+        <label for="cannot_conclude">What still cannot be concluded from the information available? <span class="required-mark">*</span></label>
+        <textarea id="cannot_conclude" data-required="true"></textarea>
+      </section>
+
+      <section id="repair">
+        <div class="section-kicker">8 · Repair Practice</div>
+        <h2>Train a better route</h2>
+        <div class="success"><strong>Practice repair:</strong> a small repeated practice that can train a better route from attention to action.</div>
+        <label for="repair_practice">What small repeated repair practice could train a better route? <span class="required-mark">*</span></label>
+        <textarea id="repair_practice" data-required="true"></textarea>
+        <label for="first_repetition">What is the first repetition of that repair practice? <span class="required-mark">*</span></label>
+        <textarea id="first_repetition" data-required="true"></textarea>
+        <label for="improvement_sign">What would count as a small but real sign of improvement? <span class="required-mark">*</span></label>
+        <textarea id="improvement_sign" data-required="true"></textarea>
+      </section>
+
+      <section id="output">
+        <div class="section-kicker">9 · Output Card</div>
+        <h2>Chapter 6 Workbook Output Card</h2>
+        <p>Generate an Output Card you can copy, download, or submit according to your instructor’s directions.</p>
+        <label for="student_name">Optional name or initials</label>
+        <input id="student_name" type="text" placeholder="Optional; not required for progress">
+        <div class="buttons">
+          <button type="button" id="generateBtn">Generate Output Card</button>
+          <button type="button" class="secondary" id="copyBtn">Copy Output Card</button>
+          <button type="button" class="secondary" id="downloadBtn">Download Output Card</button>
+          <button type="button" class="secondary" id="worksheetBtn">Download Blank Worksheet</button>
+          <button type="button" class="danger" id="clearBtn">Clear Saved Work</button>
+        </div>
+        <p id="status" class="small" role="status" aria-live="polite"></p>
+        <pre id="outputCard" class="output" tabindex="0">Click “Generate Output Card” when you are ready.</pre>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    Chapter 6 Workbook v1.0 — Practice Test Workbook · Classroom Version · Local-only HTML
+  </footer>
+
+  <script>
+    const storageKey = 'ebb_ch6_practice_test_workbook_v1';
+    const required = Array.from(document.querySelectorAll('[data-required="true"]'));
+    const fields = Array.from(document.querySelectorAll('textarea, input[type="text"], select, input[type="checkbox"]'));
+    const byId = id => document.getElementById(id);
+    const ids = ['student_name','case_first_notice','case_quick_judgment','repeated_action','trigger','habit_route','isolated_or_habit','why_habit','trains_attention','trains_avoidance','affects_others','ethical_concern','wisdom_requires','support_needed','responsibility_belongs','conditions_matter','cannot_conclude','repair_practice','first_repetition','improvement_sign'];
+    function valueOf(id) {
+      const el = byId(id);
+      if (!el) return '';
+      if (el.type === 'checkbox') return el.checked ? 'Yes' : 'No';
+      return el.value.trim();
+    }
+    function save() {
+      const data = {};
+      fields.forEach(el => { data[el.id] = el.type === 'checkbox' ? el.checked : el.value; });
+      localStorage.setItem(storageKey, JSON.stringify(data));
+      updateProgress();
+    }
+    function load() {
+      try {
+        const raw = localStorage.getItem(storageKey);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        fields.forEach(el => {
+          if (Object.prototype.hasOwnProperty.call(data, el.id)) {
+            if (el.type === 'checkbox') el.checked = Boolean(data[el.id]);
+            else el.value = data[el.id];
+          }
+        });
+      } catch (err) { console.warn('Could not load saved workbook data', err); }
+      updateProgress();
+    }
+    function fieldComplete(el) {
+      if (el.type === 'checkbox') return el.checked;
+      return el.value.trim().length > 0;
+    }
+    function updateProgress() {
+      const complete = required.filter(fieldComplete).length;
+      const pct = required.length ? Math.round((complete / required.length) * 100) : 100;
+      byId('progressFill').style.width = pct + '%';
+      byId('progressText').textContent = pct + '% complete (' + complete + ' of ' + required.length + ' required responses)';
+    }
+    function outputText() {
+      const now = new Date().toLocaleString();
+      return `Chapter 6 Workbook Output Card — Practice Test
+Generated: ${now}
+Optional name/initials: ${valueOf('student_name') || '[not provided]'}
+
+1. Case first noticing
+${valueOf('case_first_notice')}
+
+2. What quick judgment might miss
+${valueOf('case_quick_judgment')}
+
+3. Repeated action
+${valueOf('repeated_action')}
+
+4. Trigger or cue
+${valueOf('trigger')}
+
+5. Habit route
+${valueOf('habit_route')}
+
+6. Isolated choice or habit?
+${valueOf('isolated_or_habit')}
+
+7. Why this classification fits
+${valueOf('why_habit')}
+
+8. What the habit trains the person to notice, ignore, or expect
+${valueOf('trains_attention')}
+
+9. What the habit trains the person to desire, avoid, or escape
+${valueOf('trains_avoidance')}
+
+10. Effect on others or the relationship
+${valueOf('affects_others')}
+
+11. Ethical concern at stake
+${valueOf('ethical_concern')}
+
+12. What practical wisdom may require
+${valueOf('wisdom_requires')}
+
+13. Condition, support, script, pause, or practice needed
+${valueOf('support_needed')}
+
+14. Where responsibility still belongs
+${valueOf('responsibility_belongs')}
+
+15. Conditions or pressures that matter
+${valueOf('conditions_matter')}
+
+16. What still cannot be concluded
+${valueOf('cannot_conclude')}
+
+17. Repair practice
+${valueOf('repair_practice')}
+
+18. First repetition
+${valueOf('first_repetition')}
+
+19. Small sign of improvement
+${valueOf('improvement_sign')}
+
+Closing question: What has this habit trained, and what better practice could begin now?`;
+    }
+    function download(filename, text) {
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+    function worksheetText() {
+      return `Chapter 6 Workbook Blank Worksheet — Practice Test
+
+Privacy reminder: Do not disclose private, identifying, or sensitive information. You may use the provided case, a fictional example, a public example, a historical example, a composite example, or a low-stakes personal example.
+
+Case: The Avoided Conversation
+Sam avoids serious conversations by checking their phone, joking, changing the subject, or leaving. Over time, friends stop trusting Sam with hard things.
+
+1. What stands out first in this case?
+
+2. What might a quick judgment miss?
+
+3. What repeated action or response keeps happening?
+
+4. What situation, feeling, pressure, or cue triggers the response?
+
+5. Write the habit route as a simple sequence.
+
+6. Is this one isolated choice, a forming habit, a settled habit, or unsure?
+
+7. Explain why.
+
+8. What does the habit train the person to notice, ignore, or expect?
+
+9. What does the habit train the person to desire, avoid, or escape?
+
+10. How does the habit affect others or the relationship?
+
+11. What ethical concern is at stake?
+
+12. What might practical wisdom require instead?
+
+13. What condition, support, script, pause, or practice might make the better response more possible?
+
+14. Where does responsibility still belong?
+
+15. What conditions or pressures may have shaped the habit?
+
+16. What still cannot be concluded?
+
+17. What small repeated repair practice could train a better route?
+
+18. What is the first repetition of that repair practice?
+
+19. What would count as a small but real sign of improvement?
+`;
+    }
+    fields.forEach(el => {
+      el.addEventListener('input', save);
+      el.addEventListener('change', save);
+    });
+    byId('generateBtn').addEventListener('click', () => {
+      byId('outputCard').textContent = outputText();
+      byId('status').textContent = 'Output Card generated.';
+      save();
+    });
+    byId('copyBtn').addEventListener('click', async () => {
+      const text = byId('outputCard').textContent === 'Click “Generate Output Card” when you are ready.' ? outputText() : byId('outputCard').textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        byId('status').textContent = 'Output Card copied.';
+      } catch (err) {
+        byId('status').textContent = 'Copy did not work in this browser. Select the text and copy manually.';
+      }
+    });
+    byId('downloadBtn').addEventListener('click', () => {
+      const text = byId('outputCard').textContent === 'Click “Generate Output Card” when you are ready.' ? outputText() : byId('outputCard').textContent;
+      download('chapter6_practice_test_output_card.txt', text);
+      byId('status').textContent = 'Output Card downloaded.';
+    });
+    byId('worksheetBtn').addEventListener('click', () => {
+      download('chapter6_practice_test_blank_worksheet.txt', worksheetText());
+      byId('status').textContent = 'Blank worksheet downloaded.';
+    });
+    byId('clearBtn').addEventListener('click', () => {
+      const ok = confirm('Clear all saved Chapter 6 workbook responses from this browser?');
+      if (!ok) return;
+      localStorage.removeItem(storageKey);
+      fields.forEach(el => { if (el.type === 'checkbox') el.checked = false; else el.value = ''; });
+      byId('outputCard').textContent = 'Click “Generate Output Card” when you are ready.';
+      byId('status').textContent = 'Saved work cleared.';
+      updateProgress();
+    });
+    load();
+  </script>
 </body>
 </html>
